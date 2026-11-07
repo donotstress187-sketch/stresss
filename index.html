@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="description" content="Виртуальный консьерж — настраиваемое приложение для гостиниц" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+  <title>Concierge</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Экран загрузки -->
+    <div id="screen-loading" class="screen active">
+      <div class="loading-logo">CONCIERGE</div>
+      <div class="loading-bar"><div class="loading-bar-inner"></div></div>
+    </div>
+
+    <!-- Экран входа -->
+    <div id="screen-login" class="screen">
+      <div class="login-container">
+        <div class="login-header">
+          <div class="logo-mark">C</div>
+          <h1>Concierge</h1>
+          <p class="subtitle">Виртуальный ассистент гостиницы</p>
+        </div>
+
+        <div class="role-selector">
+          <button class="role-btn active" data-role="guest" id="btn-role-guest">
+            <span class="role-icon">◇</span>
+            <span>Гость</span>
+          </button>
+          <button class="role-btn" data-role="admin" id="btn-role-admin">
+            <span class="role-icon">▣</span>
+            <span>Администратор</span>
+          </button>
+        </div>
+
+        <form id="login-form" class="login-form" autocomplete="off">
+          <div class="field">
+            <label for="password">Пароль</label>
+            <input type="password" id="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" placeholder="••••" required />
+          </div>
+          <button type="submit" class="btn-primary" id="btn-login">Войти</button>
+          <p class="login-hint" id="login-hint">Гость: 1111</p>
+        </form>
+      </div>
+    </div>
+
+    <!-- Гостевой режим: Чат -->
+    <div id="screen-guest" class="screen">
+      <header class="topbar">
+        <div class="topbar-left">
+          <span class="hotel-name" id="guest-hotel-name">Гостиница</span>
+        </div>
+        <div class="topbar-right">
+          <button class="icon-btn" id="btn-guest-info" title="Информация">ⓘ</button>
+          <button class="icon-btn" id="btn-logout-guest" title="Выйти">✕</button>
+        </div>
+      </header>
+
+      <main class="chat-area" id="chat-messages"></main>
+
+      <footer class="chat-input-bar">
+        <input type="text" id="chat-input" placeholder="Напишите сообщение..." autocomplete="off" />
+        <button id="btn-send" class="btn-send" aria-label="Отправить">↑</button>
+      </footer>
+    </div>
+
+    <!-- Админ-режим -->
+    <div id="screen-admin" class="screen">
+      <header class="topbar">
+        <div class="topbar-left">
+          <span class="admin-title">Админ</span>
+        </div>
+        <div class="topbar-right">
+          <button class="icon-btn" id="btn-logout-admin" title="Выйти">✕</button>
+        </div>
+      </header>
+
+      <nav class="admin-nav" id="admin-nav">
+        <button class="nav-item active" data-panel="dashboard">Обзор</button>
+        <button class="nav-item" data-panel="hotel">Отель</button>
+        <button class="nav-item" data-panel="services">Услуги</button>
+        <button class="nav-item" data-panel="faq">База знаний</button>
+        <button class="nav-item" data-panel="requests">Заявки</button>
+        <button class="nav-item" data-panel="settings">Настройки</button>
+      </nav>
+
+      <main class="admin-content">
+        <!-- Dashboard -->
+        <section id="panel-dashboard" class="panel active">
+          <h2>Обзор</h2>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="stat-services">0</div>
+              <div class="stat-label">Услуг</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="stat-faq">0</div>
+              <div class="stat-label">Записей в базе</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="stat-requests">0</div>
+              <div class="stat-label">Заявок</div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Быстрый старт</h3>
+            <p class="muted">Заполните данные отеля, добавьте услуги и записи в базу знаний. Гости будут получать ответы на основе этих данных.</p>
+            <button class="btn-secondary" data-goto="hotel">Настроить отель →</button>
+          </div>
+        </section>
+
+        <!-- Hotel profile -->
+        <section id="panel-hotel" class="panel">
+          <h2>Профиль отеля</h2>
+          <form id="form-hotel" class="form-stack">
+            <div class="field">
+              <label>Название</label>
+              <input type="text" id="hotel-name" placeholder="Например: Гранд Отель" />
+            </div>
+            <div class="field">
+              <label>Адрес</label>
+              <input type="text" id="hotel-address" placeholder="Город, улица, дом" />
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Телефон</label>
+                <input type="tel" id="hotel-phone" placeholder="+7 ..." />
+              </div>
+              <div class="field">
+                <label>Email</label>
+                <input type="email" id="hotel-email" placeholder="info@hotel.ru" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Заезд</label>
+                <input type="text" id="hotel-checkin" placeholder="14:00" />
+              </div>
+              <div class="field">
+                <label>Выезд</label>
+                <input type="text" id="hotel-checkout" placeholder="12:00" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Краткое описание</label>
+              <textarea id="hotel-description" rows="3" placeholder="Несколько предложений об отеле"></textarea>
+            </div>
+            <button type="submit" class="btn-primary">Сохранить</button>
+          </form>
+        </section>
+
+        <!-- Services -->
+        <section id="panel-services" class="panel">
+          <div class="panel-header">
+            <h2>Услуги</h2>
+            <button class="btn-small" id="btn-add-service">+ Добавить</button>
+          </div>
+          <div id="services-list" class="list"></div>
+        </section>
+
+        <!-- FAQ / Knowledge -->
+        <section id="panel-faq" class="panel">
+          <div class="panel-header">
+            <h2>База знаний</h2>
+            <button class="btn-small" id="btn-add-faq">+ Добавить</button>
+          </div>
+          <p class="muted small">Вопросы и ответы, по которым ассистент будет отвечать гостям.</p>
+          <div id="faq-list" class="list"></div>
+        </section>
+
+        <!-- Requests -->
+        <section id="panel-requests" class="panel">
+          <h2>Заявки гостей</h2>
+          <div id="requests-list" class="list"></div>
+          <p class="muted small empty-hint" id="requests-empty">Заявок пока нет</p>
+        </section>
+
+        <!-- Settings -->
+        <section id="panel-settings" class="panel">
+          <h2>Настройки</h2>
+          <div class="card">
+            <h3>Пароли доступа</h3>
+            <p class="muted small">Гость: <code>1111</code> · Администратор: <code>6767</code></p>
+            <p class="muted small">Смена паролей будет доступна в следующей версии.</p>
+          </div>
+          <div class="card">
+            <h3>Данные</h3>
+            <button class="btn-secondary danger" id="btn-reset-data">Сбросить все данные</button>
+            <p class="muted small">Удалит профиль отеля, услуги, базу знаний и заявки.</p>
+          </div>
+          <div class="card">
+            <h3>Экспорт / Импорт</h3>
+            <button class="btn-secondary" id="btn-export">Экспорт конфигурации</button>
+            <label class="btn-secondary file-label">
+              Импорт конфигурации
+              <input type="file" id="input-import" accept=".json" hidden />
+            </label>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Модальные окна -->
+    <div id="modal-overlay" class="modal-overlay">
+      <div class="modal" id="modal">
+        <div class="modal-header">
+          <h3 id="modal-title">Заголовок</h3>
+          <button class="icon-btn" id="modal-close">✕</button>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+        <div class="modal-footer" id="modal-footer"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/assistant.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // В нативной оболочке (APK) service worker не нужен: файлы уже внутри приложения
+    var isNative = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
+    if ('serviceWorker' in navigator && !isNative) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>

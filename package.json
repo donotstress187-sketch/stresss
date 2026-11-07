@@ -1,0 +1,13 @@
+{
+  "name": "hotel-concierge-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Виртуальный консьерж для гостиниц (PWA + Android через Capacitor)",
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/core": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0"
+  }
+}
